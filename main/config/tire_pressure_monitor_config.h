@@ -6,7 +6,7 @@ extern "C"
 {
 #endif
 
-    void i2c_oled_init();
+    void tire_pressure_monitor_config_init();
 
 #ifdef __cplusplus
 }
