@@ -1,10 +1,9 @@
 #include "config/tire_pressure_monitor_config.h"
 #include "esp_lvgl_port.h"
 // #include "lvgl.h"
-// #include "domains/Label.h"
-// #include "domains/Screen.h"
-// #include "domains/Button.h"
-// #include "domains/Label.h"
+#include "domain/label/Label.h"
+#include "domain/screen/Screen.h"
+#include "domain/button/Button.h"
 #include <stdexcept>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -16,12 +15,12 @@
 cbspI2C I2CChannel1;
 cBMP280 BMP280;
 cSMP3011 SMP3011;
-// Label label;
-// Label label2;
-// Label label3;
-// Label label4;
-// Screen screen;
-// Button button(GPIO_NUM_17);
+Label label;
+Label label2;
+Label label3;
+Label label4;
+Screen screen;
+Button button(GPIO_NUM_17);
 
 unsigned int curr_screen;
 
@@ -103,13 +102,13 @@ extern "C" void app_main()
         // lv_label_set_text_fmt(labelSMP3011Press, "%6.0fPa", SMP3011.getPressure());
         // lv_label_set_text_fmt(labelSMP3011Temp, "%6.2fC", SMP3011.getTemperature());
         // lvgl_port_unlock();
-        printf("\n%d\n", button.getPressState());
+        // printf("\n%d\n", button.getPressState());
         try
         {
-            if (button.getPressState() == LONG_PRESS && screen.getCurrentScreen() == MAIN_SCREEN)
+            if (button.getPressType() == LONG_PRESS && screen.getCurrentScreen() == MAIN_SCREEN)
             {
                 /* go to menu screen */
-                screen.show(MAIN_MENU_SCREEN);
+                screen.show(MENU_SCREEN);
             }
 
             screen.show(MAIN_SCREEN);
