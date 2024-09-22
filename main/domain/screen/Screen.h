@@ -2,6 +2,8 @@
 #ifndef _SCREEN_H_
 #define _SCREEN_H_
 
+#include "stdio.h"
+
 enum
 {
     MAIN_SCREEN = 0,
@@ -14,13 +16,15 @@ typedef unsigned int screen_type;
 class Screen
 {
 private:
-    screen_type currentScreen;
+    static screen_type currentScreen;
 
 public:
     Screen();
     ~Screen();
-    void show(screen_type screen);
+    // void show(screen_type screen);
+    void show();
     screen_type getCurrentScreen();
+    void setCurrentScreen(screen_type screen);
 };
 
 #endif
