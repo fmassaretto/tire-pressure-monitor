@@ -3,6 +3,8 @@
 // #include "lvgl.h"
 #include "domain/label/Label.h"
 #include "domain/screen/Screen.h"
+#include "domain/screen/main/MainScreen.cpp"
+#include "domain/screen/menu/MenuScreen.cpp"
 #include "domain/button/Button.h"
 #include <stdexcept>
 #include "freertos/FreeRTOS.h"
@@ -20,6 +22,8 @@ Label label2;
 Label label3;
 Label label4;
 Screen screen;
+MainScreen mainScreen;
+MenuScreen menuScreen;
 Button button(GPIO_NUM_17);
 
 unsigned int curr_screen;
@@ -108,10 +112,12 @@ extern "C" void app_main()
             if (button.getPressType() == LONG_PRESS && screen.getCurrentScreen() == MAIN_SCREEN)
             {
                 /* go to menu screen */
-                screen.show(MENU_SCREEN);
+                // screen.show(MENU_SCREEN);
+                menuScreen.show();
             }
 
-            screen.show(MAIN_SCREEN);
+            // screen.show(MAIN_SCREEN);
+            mainScreen.show();
         }
         catch (const std::invalid_argument &e)
         {
