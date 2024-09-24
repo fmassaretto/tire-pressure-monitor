@@ -24,3 +24,6 @@ sdkconfig.old
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
+
+ui-project/*
+.vscode/settings.json
