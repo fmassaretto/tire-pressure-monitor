@@ -1,26 +1,19 @@
 #include "config/tire_pressure_monitor_config.h"
 #include "esp_lvgl_port.h"
 // #include "lvgl.h"
-#include "domain/label/Label.h"
-#include "domain/screen/Screen.h"
-#include "domain/screen/main/MainScreen.cpp"
-#include "domain/screen/menu/MenuScreen.cpp"
-#include "domain/button/Button.h"
-#include <stdexcept>
+#include "domains/screens/Screen.h"
+#include "domains/screens/main/MainScreen.cpp"
+#include "domains/screens/menu/MenuScreen.cpp"
+#include "domains/buttons/Button.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include <stdexcept>
 
 #include "cbspI2C.h"
-#include "cBMP280.h"
 #include "cSMP3011.h"
 
-cbspI2C I2CChannel1;
-cBMP280 BMP280;
 cSMP3011 SMP3011;
-Label label;
-Label label2;
-Label label3;
-Label label4;
+
 Screen screen;
 MainScreen mainScreen;
 MenuScreen menuScreen;
@@ -34,11 +27,12 @@ extern "C" void app_main()
 {
     tire_pressure_monitor_config_init();
 
-    I2CChannel1.init(I2C_NUM_1, GPIO_NUM_33, GPIO_NUM_32);
-    I2CChannel1.openAsMaster(100000);
+    // I2CChannel1.init(I2C_NUM_1, GPIO_NUM_33, GPIO_NUM_32);
+    // I2CChannel1.openAsMaster(100000);
 
-    BMP280.init(I2CChannel1);
-    SMP3011.init(I2CChannel1);
+    // SMP3011.init(I2CChannel1);
+    mainScreen.init();
+    menuScreen.init();
 
 #if 0
     // Lock the mutex due to the LVGL APIs are not thread-safe
@@ -51,15 +45,6 @@ extern "C" void app_main()
 #endif
     // lvgl_port_lock(0);
     // lv_obj_t *scr = lv_disp_get_scr_act(nullptr);
-    label.init();
-    label2.init();
-    label3.init();
-    label4.init();
-
-    label.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 0);
-    label2.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 16);
-    label3.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 32);
-    label4.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 48);
 
     // lv_obj_t *labelBMP280Press = lv_label_create(scr);
     // lv_label_set_long_mode(labelBMP280Press, LV_LABEL_LONG_SCROLL_CIRCULAR); /* Circular scroll */
@@ -89,18 +74,14 @@ extern "C" void app_main()
 
     while (true)
     {
-        BMP280.poll();
-        SMP3011.poll();
-        printf("\rBMP280: %6.0fPa  %6.2fC  SMP3011: %6.0fPa  %6.2fC",
-               BMP280.getPressure(), BMP280.getTemperature(),
-               SMP3011.getPressure(), SMP3011.getTemperature());
+
+        // SMP3011.poll();
+        // printf("\rBMP280: %6.0fPa  %6.2fC  SMP3011: %6.0fPa  %6.2fC",
+        //        BMP280.getPressure(), BMP280.getTemperature(),
+        //        SMP3011.getPressure(), SMP3011.getTemperature());
 
         // lvgl_port_lock(0);
 
-        label.setTextFormated("%6.0fPa", BMP280.getPressure());
-        label2.setTextFormated("%6.2fC", BMP280.getTemperature());
-        label3.setTextFormated("%6.0fPa", SMP3011.getPressure());
-        label4.setTextFormated("%6.2fC", SMP3011.getTemperature());
         // lv_label_set_text_fmt(labelBMP280Press, "%6.0fPa", BMP280.getPressure());
         // lv_label_set_text_fmt(labelBMP280Temp, "%6.2fC", BMP280.getTemperature());
         // lv_label_set_text_fmt(labelSMP3011Press, "%6.0fPa", SMP3011.getPressure());
