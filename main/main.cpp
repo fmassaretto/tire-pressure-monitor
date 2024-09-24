@@ -9,11 +9,6 @@
 #include "freertos/task.h"
 #include <stdexcept>
 
-#include "cbspI2C.h"
-#include "cSMP3011.h"
-
-cSMP3011 SMP3011;
-
 Screen screen;
 MainScreen mainScreen;
 MenuScreen menuScreen;
