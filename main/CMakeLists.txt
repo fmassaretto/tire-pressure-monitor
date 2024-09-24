@@ -3,6 +3,7 @@ idf_component_register(SRCS
 "config/tire_pressure_monitor_config.c" 
 "domains/labels/Label.cpp"
 "domains/buttons/Button.cpp"
+"domains/sensors/I2C.cpp"
 "domains/sensors/pressure/Pressure.cpp"
 "domains/sensors/temperature/Temperature.cpp"
 "domains/screens/Screen.cpp"
