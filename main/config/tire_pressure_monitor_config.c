@@ -33,6 +33,8 @@ static const char *TAG = "example";
 #define EXAMPLE_PIN_NUM_SCL 4
 #define EXAMPLE_PIN_NUM_RST -1
 #define EXAMPLE_I2C_HW_ADDR 0x3C
+// #define LV_MEM_SIZE (64 * 1024U)
+// #define EXAMPLE_MEMCUSTOM 1
 
 // The pixel number in horizontal and vertical
 #if CONFIG_EXAMPLE_LCD_CONTROLLER_SSD1306
