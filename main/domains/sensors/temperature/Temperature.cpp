@@ -1,17 +1,13 @@
 #include "Temperature.h"
 
-cbspI2C I2CChannel1;
-cBMP280 BMP280;
-
 Temperature::Temperature()
 {
+    I2C::GetInstance();
 }
 
 void Temperature::init()
 {
-    I2CChannel1.init(I2C_NUM_1, GPIO_NUM_33, GPIO_NUM_32);
-    I2CChannel1.openAsMaster(100000);
-    BMP280.init(I2CChannel1);
+    BMP280.init(i2c->getI2CChannel1());
 }
 
 float Temperature::getTemperature()
