@@ -1,10 +1,12 @@
 idf_component_register(SRCS 
 "main.cpp"
 "config/tire_pressure_monitor_config.c" 
-"domain/label/Label.cpp"
-"domain/button/Button.cpp"
-"domain/screen/Screen.cpp"
-"domain/screen/main/MainScreen.cpp"
-"domain/screen/menu/MenuScreen.cpp"
+"domains/labels/Label.cpp"
+"domains/buttons/Button.cpp"
+"domains/sensors/pressure/Pressure.cpp"
+"domains/sensors/temperature/Temperature.cpp"
+"domains/screens/Screen.cpp"
+"domains/screens/main/MainScreen.cpp"
+"domains/screens/menu/MenuScreen.cpp"
 "lvgl_demo_ui.cpp"
 INCLUDE_DIRS ".")
