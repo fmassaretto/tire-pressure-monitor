@@ -5,6 +5,7 @@
 MainScreen::MainScreen()
 {
     new Temperature();
+    new Pressure();
 }
 
 MainScreen::~MainScreen() {}
@@ -12,6 +13,7 @@ MainScreen::~MainScreen() {}
 void MainScreen::init()
 {
     temperature.init();
+    pressure.init();
 
     labelMain1.init();
     labelMain2.init();
@@ -34,7 +36,7 @@ void MainScreen::show()
     // MainScreen::setTextFormatted("Teste 1", 1.0);
 
     labelMain1.setTextFormated("%6.2fC", temperature.getTemperature());
-    // labelMain2.setTextFormated("Teste 2", 1.0);
+    labelMain2.setTextFormated("%6.0fPa", pressure.getPressure());
     // labelMain3.setTextFormated("Teste 3", 1.0);
     // labelMain4.setTextFormated("Teste 4", 1.0);
     // label.setTextFormated("%6.0fPa", BMP280.getPressure());

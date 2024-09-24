@@ -1,14 +1,20 @@
 #pragma once
-#ifndef _PRESSURE_H
-#define _PRESSURE_H
+#ifndef PRESSURE_H
+#define PRESSURE_H
+
+#include "domains/sensors/I2C.h"
+#include "cSMP3011.h"
 
 class Pressure
 {
+private:
+    cSMP3011 SMP3011;
+    I2C *i2c;
+
 public:
     Pressure();
-    ~Pressure();
     void init();
-    void show();
+    float getPressure();
 };
 
 #endif

@@ -2,14 +2,17 @@
 
 Pressure::Pressure()
 {
+    I2C::GetInstance();
 }
-
-Pressure::~Pressure() {}
 
 void Pressure::init()
 {
+    SMP3011.init(i2c->getI2CChannel1());
 }
 
-void Pressure::show()
+float Pressure::getPressure()
 {
+    SMP3011.poll();
+
+    return SMP3011.getPressure();
 }
