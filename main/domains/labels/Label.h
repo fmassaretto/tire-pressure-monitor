@@ -17,7 +17,7 @@ public:
     ~Label();
     void init();
     void setLabel(lv_obj_t *scr, lv_label_long_mode_t mode, unsigned int alignX, unsigned int alignY);
-    void setText(char *text);
+    void setText(char const *text);
     void setTextFormated(const char *fmt, float value);
     void clearScreen();
 };

@@ -31,7 +31,7 @@ void Label::setTextFormated(const char *fmt, float value)
     lv_label_set_text_fmt(label, fmt, value);
 }
 
-void Label::setText(char *text)
+void Label::setText(char const *text)
 {
     lv_label_set_text(label, text);
 }
