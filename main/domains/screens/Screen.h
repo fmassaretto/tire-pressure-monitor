@@ -3,7 +3,7 @@
 #define _SCREEN_H_
 
 #include "stdio.h"
-// #include "./domain/label/Label.h"
+#include "./domains/labels/Label.h"
 
 enum
 {
@@ -19,19 +19,21 @@ class Screen
 private:
     static screen_type currentScreen;
 
+protected:
+    Label label1;
+    Label label2;
+    Label label3;
+    Label label4;
+
 public:
     Screen();
-    ~Screen();
-    // Label label;
-    // Label label2;
-    // Label label3;
-    // Label label4;
+    virtual ~Screen();
     // void show(screen_type screen);
     void show();
     void init();
     screen_type getCurrentScreen();
     void setCurrentScreen(screen_type screen);
-    // void setTextFormatted(const char *fmt, float value);
+    virtual void create();
 };
 
 #endif

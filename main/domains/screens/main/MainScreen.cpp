@@ -1,29 +1,40 @@
 #include "MainScreen.h"
 
-// Temperature *temperature;
-
-MainScreen::MainScreen()
+MainScreen::MainScreen() : Screen()
 {
+    printf("*From contructor MainScreen.cpp* ");
     new Temperature();
     new Pressure();
+
+    // if (!lv_obj_is_valid(scr))
+    // {
+    // scr = lv_disp_get_scr_act(nullptr);
+
+    // MainScreen::init();
+    // }
 }
 
 MainScreen::~MainScreen() {}
 
-void MainScreen::init()
+void MainScreen::init(lv_obj_t *scr)
 {
     temperature.init();
     pressure.init();
 
-    labelMain1.init();
-    labelMain2.init();
-    labelMain3.init();
-    labelMain4.init();
+    label1.setLabel(scr, LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 0);
+    label2.setLabel(scr, LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 16);
 
-    labelMain1.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 0);
-    labelMain2.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 16);
-    labelMain3.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 32);
-    labelMain4.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 48);
+    // labelMain3.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 32);
+    // labelMain4.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 48);
+}
+
+void MainScreen::create()
+{
+    printf("*From create() MainScreen.cpp* ");
+    setCurrentScreen(MAIN_SCREEN);
+
+    label1.setTextFormated("%6.2fC", temperature.getTemperature());
+    label2.setTextFormated("%6.0fPa", pressure.getPressure());
 }
 
 void MainScreen::show()
@@ -35,8 +46,8 @@ void MainScreen::show()
 
     // MainScreen::setTextFormatted("Teste 1", 1.0);
 
-    labelMain1.setTextFormated("%6.2fC", temperature.getTemperature());
-    labelMain2.setTextFormated("%6.0fPa", pressure.getPressure());
+    label1.setTextFormated("%6.2fC", temperature.getTemperature());
+    label2.setTextFormated("%6.0fPa", pressure.getPressure());
     // labelMain3.setTextFormated("Teste 3", 1.0);
     // labelMain4.setTextFormated("Teste 4", 1.0);
     // label.setTextFormated("%6.0fPa", BMP280.getPressure());

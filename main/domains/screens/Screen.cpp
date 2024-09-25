@@ -5,6 +5,7 @@ screen_type Screen::currentScreen;
 
 Screen::Screen()
 {
+    printf("From contructor Screen.cpp");
 }
 
 Screen::~Screen()
@@ -55,6 +56,8 @@ void Screen::init()
 // {
 //     label.setTextFormated(fmt, value);
 // }
+
+void Screen::create() {}
 
 void Screen::setCurrentScreen(screen_type screen)
 {

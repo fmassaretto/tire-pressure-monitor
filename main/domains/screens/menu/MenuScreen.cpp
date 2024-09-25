@@ -1,20 +1,40 @@
 #include "MenuScreen.h"
 
-void MenuScreen::init()
+MenuScreen::MenuScreen() : Screen()
 {
-    // Label::init();
-    // Label::init();
-    // Label::init();
-    // Label::init();
-    this->label.init();
-    this->label2.init();
-    this->label3.init();
-    this->label4.init();
+    printf("From contructor MenuScreen.cpp");
+    // if (!lv_obj_is_valid(scr))
+    // {
+    // scr = lv_disp_get_scr_act(nullptr);
+    // // }
 
-    this->label.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 0);
-    this->label2.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 16);
-    this->label3.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 32);
-    this->label4.setLabel(LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 48);
+    // this->init();
+    // lv_obj_clean(lv_scr_act());
+}
+
+void MenuScreen::init(lv_obj_t *scr)
+{
+    label1.setLabel(scr, LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 0);
+    label2.setLabel(scr, LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 16);
+    label3.setLabel(scr, LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 32);
+    label4.setLabel(scr, LV_LABEL_LONG_SCROLL_CIRCULAR, 0, 48);
+
+    // lv_obj_clean(scr);
+}
+
+void MenuScreen::create()
+{
+    printf("From create() MenuScreen.cpp");
+    setCurrentScreen(MENU_SCREEN);
+
+    label1.setText("");
+    label2.setText("");
+    label3.setText("");
+    label4.setText("");
+    label1.setText("Teste 5");
+    label2.setText("Teste 6");
+    label3.setText("Teste 7");
+    label4.setText("Teste 8");
 }
 
 void MenuScreen::show()
@@ -24,7 +44,7 @@ void MenuScreen::show()
 
     // this->label.clearScreen();
 
-    this->label.setTextFormated("Teste 5", 1.0);
+    this->label1.setTextFormated("Teste 5", 1.0);
     this->label2.setTextFormated("Teste 6", 1.0);
     this->label3.setTextFormated("Teste 7", 1.0);
     this->label4.setTextFormated("Teste 8", 1.0);
