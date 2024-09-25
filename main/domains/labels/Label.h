@@ -8,14 +8,16 @@
 class Label
 {
 private:
-    lv_obj_t *scr;
+    // lv_obj_t *scr;
     lv_obj_t *label;
+    // lv_obj_t *scr1;
 
 public:
-    Label(/* args */);
+    Label();
     ~Label();
     void init();
-    void setLabel(lv_label_long_mode_t mode, unsigned int alignX, unsigned int alignY);
+    void setLabel(lv_obj_t *scr, lv_label_long_mode_t mode, unsigned int alignX, unsigned int alignY);
+    void setText(char *text);
     void setTextFormated(const char *fmt, float value);
     void clearScreen();
 };
