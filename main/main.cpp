@@ -26,8 +26,9 @@ extern "C" void app_main()
     // I2CChannel1.openAsMaster(100000);
 
     // SMP3011.init(I2CChannel1);
-    mainScreen.init();
-    menuScreen.init();
+    lv_obj_t *scr = lv_disp_get_scr_act(nullptr);
+    mainScreen.init(scr);
+    menuScreen.init(scr);
 
 #if 0
     // Lock the mutex due to the LVGL APIs are not thread-safe
@@ -89,11 +90,13 @@ extern "C" void app_main()
             {
                 /* go to menu screen */
                 // screen.show(MENU_SCREEN);
-                menuScreen.show();
+                menuScreen.create();
+                // menuScreen.show();
             }
 
             // screen.show(MAIN_SCREEN);
-            mainScreen.show();
+            mainScreen.create();
+            // mainScreen.show();
         }
         catch (const std::invalid_argument &e)
         {
