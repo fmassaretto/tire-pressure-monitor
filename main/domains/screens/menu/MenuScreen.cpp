@@ -27,6 +27,8 @@ void MenuScreen::create()
     printf("From create() MenuScreen.cpp");
     setCurrentScreen(MENU_SCREEN);
 
+    // label1.clearScreen();
+
     label1.setText("");
     label2.setText("");
     label3.setText("");
