@@ -33,8 +33,9 @@ void MainScreen::create()
     printf("*From create() MainScreen.cpp* ");
     setCurrentScreen(MAIN_SCREEN);
 
-    label1.setTextFormated("%6.2fC", temperature.getTemperature());
-    label2.setTextFormated("%6.0fPa", pressure.getPressure());
+    label1.setTextFormated("%6.2f psi", pressure.getPressureInPsi());
+    // label1.setTextFormated("%6.2fC", temperature.getTemperature());
+    label2.setTextFormated("%6.0f bar", pressure.getPressureInBar());
 }
 
 void MainScreen::show()
@@ -47,7 +48,7 @@ void MainScreen::show()
     // MainScreen::setTextFormatted("Teste 1", 1.0);
 
     label1.setTextFormated("%6.2fC", temperature.getTemperature());
-    label2.setTextFormated("%6.0fPa", pressure.getPressure());
+    label2.setTextFormated("%6.0fPa", pressure.getPressureInPsi());
     // labelMain3.setTextFormated("Teste 3", 1.0);
     // labelMain4.setTextFormated("Teste 4", 1.0);
     // label.setTextFormated("%6.0fPa", BMP280.getPressure());
