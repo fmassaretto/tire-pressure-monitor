@@ -33,9 +33,9 @@ void MainScreen::create()
     printf("*From create() MainScreen.cpp* ");
     setCurrentScreen(MAIN_SCREEN);
 
-    label1.setTextFormated("%6.2f psi", pressure.getPressureInPsi());
+    label1.setTextFormated("%4.2f psi", pressure.getPressureInPsi());
     // label1.setTextFormated("%6.2fC", temperature.getTemperature());
-    label2.setTextFormated("%6.0f bar", pressure.getPressureInBar());
+    label2.setTextFormated("%2.0f bar", pressure.getPressureInBar());
 }
 
 void MainScreen::show()
