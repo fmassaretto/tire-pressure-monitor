@@ -7,6 +7,7 @@
 #include "domains/buttons/Button.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+// #include "freertos/queue.h"
 #include <stdexcept>
 
 Screen screen;
@@ -15,6 +16,16 @@ MenuScreen menuScreen;
 Button button(GPIO_NUM_17);
 
 unsigned int curr_screen;
+/*
+QueueHandle_t interputQueue;
+
+static void IRAM_ATTR gpio_interrupt_handler(void *args)
+{
+    int pinNumber = (int)args;
+    printf("%s \n", "gpio_interrupt_handler");
+    xQueueSendFromISR(interputQueue, &pinNumber, NULL);
+}
+*/
 
 // extern void example_lvgl_demo_ui(lv_disp_t *disp);
 
@@ -67,6 +78,14 @@ extern "C" void app_main()
     // lv_obj_align(labelSMP3011Temp, LV_ALIGN_TOP_MID, 0, 48);
 
     // lvgl_port_unlock();
+    /*
+        interputQueue = xQueueCreate(10, sizeof(int));
+
+        gpio_install_isr_service(0);
+        gpio_isr_handler_add(button.getPin(), gpio_interrupt_handler, (void *)button.getPin());
+
+        int pinNumber = 0;
+    */
 
     while (true)
     {
@@ -84,24 +103,23 @@ extern "C" void app_main()
         // lv_label_set_text_fmt(labelSMP3011Temp, "%6.2fC", SMP3011.getTemperature());
         // lvgl_port_unlock();
         // printf("\n%d\n", button.getPressState());
-        try
-        {
-            if (button.getPressType() == LONG_PRESS && screen.getCurrentScreen() == MAIN_SCREEN)
-            {
-                /* go to menu screen */
-                // screen.show(MENU_SCREEN);
-                menuScreen.create();
-                // menuScreen.show();
-            }
 
-            // screen.show(MAIN_SCREEN);
-            mainScreen.create();
-            // mainScreen.show();
-        }
-        catch (const std::invalid_argument &e)
+        /*if (xQueueReceive(interputQueue, &pinNumber, portMAX_DELAY))
         {
-            printf(e.what());
+        }*/
+
+        if (button.getPressType() == LONG_PRESS && screen.getCurrentScreen() == MAIN_SCREEN)
+        {
+            /* go to menu screen */
+            // screen.show(MENU_SCREEN);
+            // lv_obj_clean(scr);
+            menuScreen.create();
+            // menuScreen.show();
         }
+
+        // screen.show(MAIN_SCREEN);
+        mainScreen.create();
+        // mainScreen.show();
 
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
