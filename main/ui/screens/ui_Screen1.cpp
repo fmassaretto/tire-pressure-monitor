@@ -2,12 +2,15 @@
 // SquareLine Studio version: SquareLine Studio 1.4.2
 // LVGL version: 8.3.11
 // Project name: SquareLine_Project
-
+#include "ui_screen1.h"
 #include "../ui.h"
-#include "domains/sensors/pressure/Pressure.h"
+
+Pressure *pressure = new Pressure();
 
 void ui_Screen1_screen_init(void)
 {
+    // printf("ui_Screen1_screen_init\n");
+    // pressure->init();
     ui_Screen1 = lv_obj_create(NULL);
     lv_obj_clear_flag(ui_Screen1, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
@@ -18,7 +21,9 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_y(ui_Label1, -18);
     lv_obj_set_align(ui_Label1, LV_ALIGN_CENTER);
     lv_label_set_long_mode(ui_Label1, LV_LABEL_LONG_SCROLL_CIRCULAR);
-    lv_label_set_text(ui_Label1, "0");
+    // lv_label_set_text_fmt(ui_Label1, "%6.2f", pressure->getPressureInPsi());
+    // printf("%6.2f", pressure->getPressureInPsi());
+    // lv_label_set_text(ui_Label1, pressure->getPressureInPsi());
 
     ui_Label5 = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_Label5, SCREEN_WIDTH);     /// 1
@@ -38,4 +43,9 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_align(ui_Label6, LV_ALIGN_CENTER);
     lv_label_set_text(ui_Label6, "PSI");
     lv_obj_set_style_text_font(ui_Label6, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+}
+
+void updatePressure()
+{
+    lv_label_set_text_fmt(ui_Label1, "%6.2f", pressure->getPressureInPsi());
 }
