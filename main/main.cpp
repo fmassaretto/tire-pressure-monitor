@@ -2,22 +2,37 @@
 #include "ui/ui.h"
 #include "ui/ui_helpers.h"
 #include "esp_lvgl_port.h"
-#include "domains/screens/Screen.h"
-#include "domains/sensors/pressure/Pressure.cpp"
-#include "domains/screens/main/MainScreen.cpp"
-#include "domains/screens/menu/MenuScreen.cpp"
+// #include "domains/screens/Screen.h"
+// #include "domains/screens/main/MainScreen.cpp"
+// #include "domains/screens/menu/MenuScreen.cpp"
+#include "ui/screens/ui_screen1.h"
 #include "domains/buttons/Button.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include <stdexcept>
+// freeRTOS Sergio Prado
 
-Screen screen;
-Pressure pressure;
-MainScreen mainScreen;
-MenuScreen menuScreen;
+#define EXAMPLE_PIN_LED GPIO_NUM_2
+
+// Screen screen;
+// MainScreen mainScreen;
+// MenuScreen menuScreen;
 Button button(GPIO_NUM_17);
 
 unsigned int curr_screen;
+
+/*
+        TASKS
+*/
+// Prototypes
+void TaskBlink(void *parameter);
+void TaskButton(void *parameter);
+void TaskScreen(void *parameter);
+
+// Handlers
+TaskHandle_t taskBlinkHandle = nullptr;
+TaskHandle_t taskButtonHandle = nullptr;
+TaskHandle_t taskScreenHandle = nullptr;
 
 // extern void example_lvgl_demo_ui(lv_disp_t *disp);
 
@@ -32,8 +47,14 @@ extern "C" void app_main()
     // lv_obj_t *scr = lv_disp_get_scr_act(nullptr);
     // mainScreen.init(scr);
     // menuScreen.init(scr);
+    lvgl_port_lock(0);
     ui_init();
-    pressure.init();
+    lvgl_port_unlock();
+
+    // Create tasks
+    xTaskCreate(TaskBlink, "Blink", 1024, nullptr, tskIDLE_PRIORITY, &taskBlinkHandle);
+    xTaskCreate(TaskButton, "Button", 2048, nullptr, tskIDLE_PRIORITY, &taskButtonHandle);
+    xTaskCreate(TaskScreen, "Screen", 2048, nullptr, tskIDLE_PRIORITY, &taskScreenHandle);
 
 #if 0
     // Lock the mutex due to the LVGL APIs are not thread-safe
@@ -73,28 +94,101 @@ extern "C" void app_main()
 
     // lvgl_port_unlock();
 
-    while (true)
+    // while (true)
+    // {
+    //     // SMP3011.poll();
+    //     // printf("\rBMP280: %6.0fPa  %6.2fC  SMP3011: %6.0fPa  %6.2fC",
+    //     //        BMP280.getPressure(), BMP280.getTemperature(),
+    //     //        SMP3011.getPressure(), SMP3011.getTemperature());
+
+    //     // lvgl_port_lock(0);
+
+    //     // lv_label_set_text_fmt(labelBMP280Press, "%6.0fPa", BMP280.getPressure());
+    //     // lv_label_set_text_fmt(labelBMP280Temp, "%6.2fC", BMP280.getTemperature());
+    //     // lv_label_set_text_fmt(labelSMP3011Press, "%6.0fPa", SMP3011.getPressure());
+    //     // lv_label_set_text_fmt(labelSMP3011Temp, "%6.2fC", SMP3011.getTemperature());
+    //     // lvgl_port_unlock();
+    //     // printf("\n%d\n", button.getPressState());
+
+    //     // switch (button.getButtonEvent())
+    //     // {
+    //     // case NO_TAP:
+    //     // {
+    //     //     printf("NO_PRESS\n");
+    //     // }
+    //     // break;
+    //     // case SINGLE_TAP:
+    //     // {
+    //     //     printf("SINGLE_PRESS - Recomendacao Screen\n");
+    //     // }
+    //     // break;
+    //     // case LONG_TAP:
+    //     // {
+    //     //     printf("LONG_PRESS - Change scale\n");
+    //     // }
+    //     // break;
+    //     // case DOUBLE_TAP:
+    //     // {
+    //     //     printf("DOUBLE_PRESS - switch LED\n");
+    //     // }
+    //     // break;
+    //     // }
+
+    //     // if (button.getPressType() == LONG_PRESS /*&& screen.getCurrentScreen() == MAIN_SCREEN*/)
+    //     // {
+    //     //     /* go to menu screen */
+    //     //     // screen.show(MENU_SCREEN);
+    //     //     // lv_obj_clean(scr);
+
+    //     //     // menuScreen.create();
+    //     //     // _ui_screen_change(&ui_Screen2, LV_SCR_LOAD_ANIM_NONE, 500, 0, &ui_Screen2_screen_init);
+    //     //     lv_disp_load_scr(ui_Screen2);
+    //     //     // menuScreen.show();
+    //     // }
+
+    //     // screen.show(MAIN_SCREEN);
+
+    //     // mainScreen.create();
+
+    //     // mainScreen.show();
+
+    //     vTaskDelay(1000 / portTICK_PERIOD_MS);
+    // }
+}
+
+void TaskBlink(void *parameter)
+{
+    while (1)
     {
+        gpio_set_level(EXAMPLE_PIN_LED, 1);
+        vTaskDelay(500 / portTICK_PERIOD_MS);
+        gpio_set_level(EXAMPLE_PIN_LED, 0);
+        vTaskDelay(500 / portTICK_PERIOD_MS);
+    }
+}
 
-        // SMP3011.poll();
-        // printf("\rBMP280: %6.0fPa  %6.2fC  SMP3011: %6.0fPa  %6.2fC",
-        //        BMP280.getPressure(), BMP280.getTemperature(),
-        //        SMP3011.getPressure(), SMP3011.getTemperature());
+void TaskScreen(void *parameter)
+{
+    while (1)
+    {
+        lvgl_port_lock(0);
+        lv_disp_load_scr(ui_Screen1);
+        updatePressure();
+        printf("TaskScreen: ui_Screen1\n");
+        lvgl_port_unlock();
+        vTaskDelay(100 / portTICK_PERIOD_MS);
+    }
+}
 
-        // lvgl_port_lock(0);
-
-        // lv_label_set_text_fmt(labelBMP280Press, "%6.0fPa", BMP280.getPressure());
-        // lv_label_set_text_fmt(labelBMP280Temp, "%6.2fC", BMP280.getTemperature());
-        // lv_label_set_text_fmt(labelSMP3011Press, "%6.0fPa", SMP3011.getPressure());
-        // lv_label_set_text_fmt(labelSMP3011Temp, "%6.2fC", SMP3011.getTemperature());
-        // lvgl_port_unlock();
-        // printf("\n%d\n", button.getPressState());
-
+void TaskButton(void *parameter)
+{
+    while (1)
+    {
         switch (button.getButtonEvent())
         {
         case NO_TAP:
         {
-            printf("NO_PRESS\n");
+            // printf("NO_PRESS\n");
         }
         break;
         case SINGLE_TAP:
@@ -113,25 +207,6 @@ extern "C" void app_main()
         }
         break;
         }
-
-        // if (button.getPressType() == LONG_PRESS /*&& screen.getCurrentScreen() == MAIN_SCREEN*/)
-        // {
-        //     /* go to menu screen */
-        //     // screen.show(MENU_SCREEN);
-        //     // lv_obj_clean(scr);
-
-        //     // menuScreen.create();
-        //     // _ui_screen_change(&ui_Screen2, LV_SCR_LOAD_ANIM_NONE, 500, 0, &ui_Screen2_screen_init);
-        //     lv_disp_load_scr(ui_Screen2);
-        //     // menuScreen.show();
-        // }
-
-        // screen.show(MAIN_SCREEN);
-
-        // mainScreen.create();
-
-        // mainScreen.show();
-
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        vTaskDelay(800 / portTICK_PERIOD_MS);
     }
 }
