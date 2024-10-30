@@ -1,31 +1,23 @@
 #include "config/tire_pressure_monitor_config.h"
+#include "ui/ui.h"
+#include "ui/ui_helpers.h"
 #include "esp_lvgl_port.h"
-// #include "lvgl.h"
 #include "domains/screens/Screen.h"
+#include "domains/sensors/pressure/Pressure.cpp"
 #include "domains/screens/main/MainScreen.cpp"
 #include "domains/screens/menu/MenuScreen.cpp"
 #include "domains/buttons/Button.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-// #include "freertos/queue.h"
 #include <stdexcept>
 
 Screen screen;
+Pressure pressure;
 MainScreen mainScreen;
 MenuScreen menuScreen;
 Button button(GPIO_NUM_17);
 
 unsigned int curr_screen;
-/*
-QueueHandle_t interputQueue;
-
-static void IRAM_ATTR gpio_interrupt_handler(void *args)
-{
-    int pinNumber = (int)args;
-    printf("%s \n", "gpio_interrupt_handler");
-    xQueueSendFromISR(interputQueue, &pinNumber, NULL);
-}
-*/
 
 // extern void example_lvgl_demo_ui(lv_disp_t *disp);
 
@@ -37,9 +29,11 @@ extern "C" void app_main()
     // I2CChannel1.openAsMaster(100000);
 
     // SMP3011.init(I2CChannel1);
-    lv_obj_t *scr = lv_disp_get_scr_act(nullptr);
-    mainScreen.init(scr);
-    menuScreen.init(scr);
+    // lv_obj_t *scr = lv_disp_get_scr_act(nullptr);
+    // mainScreen.init(scr);
+    // menuScreen.init(scr);
+    ui_init();
+    pressure.init();
 
 #if 0
     // Lock the mutex due to the LVGL APIs are not thread-safe
@@ -78,14 +72,6 @@ extern "C" void app_main()
     // lv_obj_align(labelSMP3011Temp, LV_ALIGN_TOP_MID, 0, 48);
 
     // lvgl_port_unlock();
-    /*
-        interputQueue = xQueueCreate(10, sizeof(int));
-
-        gpio_install_isr_service(0);
-        gpio_isr_handler_add(button.getPin(), gpio_interrupt_handler, (void *)button.getPin());
-
-        int pinNumber = 0;
-    */
 
     while (true)
     {
@@ -104,21 +90,46 @@ extern "C" void app_main()
         // lvgl_port_unlock();
         // printf("\n%d\n", button.getPressState());
 
-        /*if (xQueueReceive(interputQueue, &pinNumber, portMAX_DELAY))
+        switch (button.getButtonEvent())
         {
-        }*/
-
-        if (button.getPressType() == LONG_PRESS && screen.getCurrentScreen() == MAIN_SCREEN)
+        case NO_TAP:
         {
-            /* go to menu screen */
-            // screen.show(MENU_SCREEN);
-            // lv_obj_clean(scr);
-            menuScreen.create();
-            // menuScreen.show();
+            printf("NO_PRESS\n");
+        }
+        break;
+        case SINGLE_TAP:
+        {
+            printf("SINGLE_PRESS - Recomendacao Screen\n");
+        }
+        break;
+        case LONG_TAP:
+        {
+            printf("LONG_PRESS - Change scale\n");
+        }
+        break;
+        case DOUBLE_TAP:
+        {
+            printf("DOUBLE_PRESS - switch LED\n");
+        }
+        break;
         }
 
+        // if (button.getPressType() == LONG_PRESS /*&& screen.getCurrentScreen() == MAIN_SCREEN*/)
+        // {
+        //     /* go to menu screen */
+        //     // screen.show(MENU_SCREEN);
+        //     // lv_obj_clean(scr);
+
+        //     // menuScreen.create();
+        //     // _ui_screen_change(&ui_Screen2, LV_SCR_LOAD_ANIM_NONE, 500, 0, &ui_Screen2_screen_init);
+        //     lv_disp_load_scr(ui_Screen2);
+        //     // menuScreen.show();
+        // }
+
         // screen.show(MAIN_SCREEN);
-        mainScreen.create();
+
+        // mainScreen.create();
+
         // mainScreen.show();
 
         vTaskDelay(1000 / portTICK_PERIOD_MS);
