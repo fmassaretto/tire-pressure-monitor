@@ -2,13 +2,11 @@
 
 Pressure::Pressure()
 {
-    // printf("Pressure.cpp: Pressure()\n");
     I2C::GetInstance();
 }
 
 void Pressure::init()
 {
-    // printf("Pressure.cpp: init()\n");
     SMP3011.init(i2c->getI2CChannel1());
 }
 
