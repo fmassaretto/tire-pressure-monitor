@@ -2,211 +2,190 @@
 #include "ui/ui.h"
 #include "ui/ui_helpers.h"
 #include "esp_lvgl_port.h"
-// #include "domains/screens/Screen.h"
-// #include "domains/screens/main/MainScreen.cpp"
-// #include "domains/screens/menu/MenuScreen.cpp"
 #include "ui/screens/ui_screen1.h"
 #include "domains/buttons/Button.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include <stdexcept>
+#include "freertos/semphr.h"
+#include "freertos/queue.h"
+#include "driver/gpio.h"
+// #include <semphr.h>
 // freeRTOS Sergio Prado
+#define BUTTON_PIN GPIO_NUM_17
+#define LED_PIN GPIO_NUM_2
+SemaphoreHandle_t interruptSemaphore;
 
-#define EXAMPLE_PIN_LED GPIO_NUM_2
-
-// Screen screen;
-// MainScreen mainScreen;
-// MenuScreen menuScreen;
 Button button(GPIO_NUM_17);
 
+QueueHandle_t interputQueue;
+int state = 0;
 unsigned int curr_screen;
+bool recomendationScreenActive = false;
 
 /*
         TASKS
 */
 // Prototypes
-void TaskBlink(void *parameter);
 void TaskButton(void *parameter);
 void TaskScreen(void *parameter);
+void TaskUpdatePressure(void *parameter);
+void TaskUpdateTemperature(void *parameter);
 
 // Handlers
-TaskHandle_t taskBlinkHandle = nullptr;
 TaskHandle_t taskButtonHandle = nullptr;
 TaskHandle_t taskScreenHandle = nullptr;
+TaskHandle_t taskUpdatePressureHandle = nullptr;
+TaskHandle_t taskUpdateTemperatureHandle = nullptr;
 
-// extern void example_lvgl_demo_ui(lv_disp_t *disp);
+static void IRAM_ATTR gpio_interrupt_handler(void *args)
+{
+    int pinNumber = (int)args;
+    xQueueSendFromISR(interputQueue, &pinNumber, NULL);
+}
+
+void LED_Control_Task(void *params)
+{
+    int pinNumber, count = 0;
+    while (true)
+    {
+        if (xQueueReceive(interputQueue, &pinNumber, portMAX_DELAY))
+        {
+            printf("GPIO %d was pressed %d times. The state is %d\n", pinNumber, count++, gpio_get_level(BUTTON_PIN));
+            switch (button.getButtonEvent())
+            {
+            case NO_TAP:
+            {
+                // printf("NO_PRESS\n");
+            }
+            break;
+            case SINGLE_TAP:
+            {
+                printf("SINGLE_PRESS - Recomendacao Screen\n");
+            }
+            break;
+            case LONG_TAP:
+            {
+                printf("LONG_PRESS - Change scale\n");
+                recomendationScreenActive = !recomendationScreenActive;
+            }
+            break;
+            case DOUBLE_TAP:
+            {
+                printf("DOUBLE_PRESS - switch LED\n");
+            }
+            break;
+            }
+            vTaskDelay(800 / portTICK_PERIOD_MS);
+            // gpio_set_level(LED_PIN, gpio_get_level(BUTTON_PIN));
+        }
+    }
+}
 
 extern "C" void app_main()
 {
+    // pinMode(17, INPUT_PULLUP);
+    // gpio_set_direction(17, GPIO_MODE_DEF_INPUT, GPIO_PULLUP_ENABLE);
+    esp_rom_gpio_pad_select_gpio(LED_PIN);
+    gpio_set_direction(LED_PIN, GPIO_MODE_OUTPUT);
+
+    esp_rom_gpio_pad_select_gpio(BUTTON_PIN);
+    gpio_set_direction(BUTTON_PIN, GPIO_MODE_INPUT);
+    gpio_pulldown_en(BUTTON_PIN);
+    gpio_pullup_dis(BUTTON_PIN);
+    gpio_set_intr_type(BUTTON_PIN, GPIO_INTR_POSEDGE);
+
+    interputQueue = xQueueCreate(10, sizeof(int));
+    xTaskCreate(LED_Control_Task, "LED_Control_Task", 2048, NULL, 1, NULL);
+
+    gpio_install_isr_service(0);
+    gpio_isr_handler_add(BUTTON_PIN, gpio_interrupt_handler, (void *)BUTTON_PIN);
+
     tire_pressure_monitor_config_init();
 
-    // I2CChannel1.init(I2C_NUM_1, GPIO_NUM_33, GPIO_NUM_32);
-    // I2CChannel1.openAsMaster(100000);
-
-    // SMP3011.init(I2CChannel1);
-    // lv_obj_t *scr = lv_disp_get_scr_act(nullptr);
-    // mainScreen.init(scr);
-    // menuScreen.init(scr);
     lvgl_port_lock(0);
     ui_init();
     lvgl_port_unlock();
 
     // Create tasks
-    xTaskCreate(TaskBlink, "Blink", 1024, nullptr, tskIDLE_PRIORITY, &taskBlinkHandle);
-    xTaskCreate(TaskButton, "Button", 2048, nullptr, tskIDLE_PRIORITY, &taskButtonHandle);
+    // xTaskCreate(TaskButton, "Button", 2048, nullptr, 0, &taskButtonHandle);
     xTaskCreate(TaskScreen, "Screen", 2048, nullptr, tskIDLE_PRIORITY, &taskScreenHandle);
-
-#if 0
-    // Lock the mutex due to the LVGL APIs are not thread-safe
-    if (lvgl_port_lock(0))
-    {
-        example_lvgl_demo_ui(nullptr);
-        // Release the mutex
-        lvgl_port_unlock();
-    }
-#endif
-    // lvgl_port_lock(0);
-    // lv_obj_t *scr = lv_disp_get_scr_act(nullptr);
-
-    // lv_obj_t *labelBMP280Press = lv_label_create(scr);
-    // lv_label_set_long_mode(labelBMP280Press, LV_LABEL_LONG_SCROLL_CIRCULAR); /* Circular scroll */
-    // lv_label_set_text(labelBMP280Press, " ");
-    // lv_obj_set_width(labelBMP280Press, 128);
-    // lv_obj_align(labelBMP280Press, LV_ALIGN_TOP_MID, 0, 0);
-
-    // lv_obj_t *labelBMP280Temp = lv_label_create(scr);
-    // lv_label_set_long_mode(labelBMP280Temp, LV_LABEL_LONG_SCROLL_CIRCULAR); /* Circular scroll */
-    // lv_label_set_text(labelBMP280Temp, " ");
-    // lv_obj_set_width(labelBMP280Temp, 128);
-    // lv_obj_align(labelBMP280Temp, LV_ALIGN_TOP_MID, 0, 16);
-
-    // lv_obj_t *labelSMP3011Press = lv_label_create(scr);
-    // lv_label_set_long_mode(labelSMP3011Press, LV_LABEL_LONG_SCROLL_CIRCULAR); /* Circular scroll */
-    // lv_label_set_text(labelSMP3011Press, " ");
-    // lv_obj_set_width(labelSMP3011Press, 128);
-    // lv_obj_align(labelSMP3011Press, LV_ALIGN_TOP_MID, 0, 32);
-
-    // lv_obj_t *labelSMP3011Temp = lv_label_create(scr);
-    // lv_label_set_long_mode(labelSMP3011Temp, LV_LABEL_LONG_SCROLL_CIRCULAR); /* Circular scroll */
-    // lv_label_set_text(labelSMP3011Temp, " ");
-    // lv_obj_set_width(labelSMP3011Temp, 128);
-    // lv_obj_align(labelSMP3011Temp, LV_ALIGN_TOP_MID, 0, 48);
-
-    // lvgl_port_unlock();
-
-    // while (true)
-    // {
-    //     // SMP3011.poll();
-    //     // printf("\rBMP280: %6.0fPa  %6.2fC  SMP3011: %6.0fPa  %6.2fC",
-    //     //        BMP280.getPressure(), BMP280.getTemperature(),
-    //     //        SMP3011.getPressure(), SMP3011.getTemperature());
-
-    //     // lvgl_port_lock(0);
-
-    //     // lv_label_set_text_fmt(labelBMP280Press, "%6.0fPa", BMP280.getPressure());
-    //     // lv_label_set_text_fmt(labelBMP280Temp, "%6.2fC", BMP280.getTemperature());
-    //     // lv_label_set_text_fmt(labelSMP3011Press, "%6.0fPa", SMP3011.getPressure());
-    //     // lv_label_set_text_fmt(labelSMP3011Temp, "%6.2fC", SMP3011.getTemperature());
-    //     // lvgl_port_unlock();
-    //     // printf("\n%d\n", button.getPressState());
-
-    //     // switch (button.getButtonEvent())
-    //     // {
-    //     // case NO_TAP:
-    //     // {
-    //     //     printf("NO_PRESS\n");
-    //     // }
-    //     // break;
-    //     // case SINGLE_TAP:
-    //     // {
-    //     //     printf("SINGLE_PRESS - Recomendacao Screen\n");
-    //     // }
-    //     // break;
-    //     // case LONG_TAP:
-    //     // {
-    //     //     printf("LONG_PRESS - Change scale\n");
-    //     // }
-    //     // break;
-    //     // case DOUBLE_TAP:
-    //     // {
-    //     //     printf("DOUBLE_PRESS - switch LED\n");
-    //     // }
-    //     // break;
-    //     // }
-
-    //     // if (button.getPressType() == LONG_PRESS /*&& screen.getCurrentScreen() == MAIN_SCREEN*/)
-    //     // {
-    //     //     /* go to menu screen */
-    //     //     // screen.show(MENU_SCREEN);
-    //     //     // lv_obj_clean(scr);
-
-    //     //     // menuScreen.create();
-    //     //     // _ui_screen_change(&ui_Screen2, LV_SCR_LOAD_ANIM_NONE, 500, 0, &ui_Screen2_screen_init);
-    //     //     lv_disp_load_scr(ui_Screen2);
-    //     //     // menuScreen.show();
-    //     // }
-
-    //     // screen.show(MAIN_SCREEN);
-
-    //     // mainScreen.create();
-
-    //     // mainScreen.show();
-
-    //     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    // }
-}
-
-void TaskBlink(void *parameter)
-{
-    while (1)
-    {
-        gpio_set_level(EXAMPLE_PIN_LED, 1);
-        vTaskDelay(500 / portTICK_PERIOD_MS);
-        gpio_set_level(EXAMPLE_PIN_LED, 0);
-        vTaskDelay(500 / portTICK_PERIOD_MS);
-    }
+    xTaskCreate(TaskUpdatePressure, "UpdatePressure", 2048, nullptr, 2, &taskUpdatePressureHandle);
+    xTaskCreate(TaskUpdateTemperature, "UpdateTemperature", 2048, nullptr, 2, &taskUpdateTemperatureHandle);
 }
 
 void TaskScreen(void *parameter)
 {
     while (1)
     {
-        lvgl_port_lock(0);
-        lv_disp_load_scr(ui_Screen1);
-        updatePressure();
-        printf("TaskScreen: ui_Screen1\n");
-        lvgl_port_unlock();
+        // lvgl_port_lock(0);
+
+        // lv_disp_load_scr(ui_Screen1);
+        if (recomendationScreenActive)
+        {
+            // printf("True %d\n", recomendationScreenActive);
+            lv_scr_load(ui_Screen2);
+        }
+        else
+        {
+            // printf("False %d\n", recomendationScreenActive);
+            lv_scr_load(ui_Screen1);
+        }
+        // printf("TaskScreen: ui_Screen1\n");
+        // lvgl_port_unlock();
         vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 }
 
-void TaskButton(void *parameter)
+void TaskUpdatePressure(void *parameter)
 {
     while (1)
     {
-        switch (button.getButtonEvent())
-        {
-        case NO_TAP:
-        {
-            // printf("NO_PRESS\n");
-        }
-        break;
-        case SINGLE_TAP:
-        {
-            printf("SINGLE_PRESS - Recomendacao Screen\n");
-        }
-        break;
-        case LONG_TAP:
-        {
-            printf("LONG_PRESS - Change scale\n");
-        }
-        break;
-        case DOUBLE_TAP:
-        {
-            printf("DOUBLE_PRESS - switch LED\n");
-        }
-        break;
-        }
-        vTaskDelay(800 / portTICK_PERIOD_MS);
+        // lvgl_port_lock(0);
+        updatePressure();
+        // lvgl_port_unlock();
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        printf("\n %lu \n", (1000 / portTICK_PERIOD_MS));
     }
 }
+
+void TaskUpdateTemperature(void *parameter)
+{
+    while (1)
+    {
+        // lvgl_port_lock(0);
+        updateAmbientTemperature();
+        // lvgl_port_unlock();
+        vTaskDelay(10000 / portTICK_PERIOD_MS);
+    }
+}
+
+// void TaskButton(void *parameter)
+// {
+//     while (1)
+//     {
+//         switch (button.getButtonEvent())
+//         {
+//         case NO_TAP:
+//         {
+//             // printf("NO_PRESS\n");
+//         }
+//         break;
+//         case SINGLE_TAP:
+//         {
+//             printf("SINGLE_PRESS - Recomendacao Screen\n");
+//         }
+//         break;
+//         case LONG_TAP:
+//         {
+//             printf("LONG_PRESS - Change scale\n");
+//         }
+//         break;
+//         case DOUBLE_TAP:
+//         {
+//             printf("DOUBLE_PRESS - switch LED\n");
+//         }
+//         break;
+//         }
+//         vTaskDelay(800 / portTICK_PERIOD_MS);
+//     }
+// }
