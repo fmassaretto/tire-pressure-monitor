@@ -4,5 +4,6 @@
 #include "domains/sensors/pressure/Pressure.h"
 
 void updatePressure();
+void updateAmbientTemperature();
 
 #endif

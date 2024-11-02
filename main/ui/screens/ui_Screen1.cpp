@@ -4,13 +4,31 @@
 // Project name: SquareLine_Project
 #include "ui_screen1.h"
 #include "../ui.h"
+#include "./domains/sensors/pressure/Pressure.h"
+#include "./domains/sensors/temperature/Temperature.h"
 
-Pressure *pressure = new Pressure();
+// #include "cbspI2C.h"
+// #include "cBMP280.h"
+// #include "cSMP3011.h"
+
+// cbspI2C I2CChannel1;
+// cBMP280 BMP280;
+// cSMP3011 SMP3011;
+Pressure pressure;
+Temperature temperature;
 
 void ui_Screen1_screen_init(void)
 {
-    // printf("ui_Screen1_screen_init\n");
+    // I2CChannel1.init(I2C_NUM_1, GPIO_NUM_33, GPIO_NUM_32);
+    // I2CChannel1.openAsMaster(100000);
+
+    // BMP280.init(I2CChannel1);
+    // SMP3011.init(I2CChannel1);
+
     // pressure->init();
+    // printf("ui_Screen1_screen_init\n");
+    pressure.init();
+    temperature.init();
     ui_Screen1 = lv_obj_create(NULL);
     lv_obj_clear_flag(ui_Screen1, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
@@ -47,5 +65,16 @@ void ui_Screen1_screen_init(void)
 
 void updatePressure()
 {
-    lv_label_set_text_fmt(ui_Label1, "%6.2f", pressure->getPressureInPsi());
+    // BMP280.poll();
+    // SMP3011.poll();
+    // lv_label_set_text_fmt(ui_Label1, "%6.2f", SMP3011.getPressure());
+    lv_label_set_text_fmt(ui_Label1, "%6.2f", pressure.getPressureInPsi());
+}
+
+void updateAmbientTemperature()
+{
+    // BMP280.poll();
+    // SMP3011.poll();
+    // lv_label_set_text_fmt(ui_Label1, "%6.2f", SMP3011.getPressure());
+    lv_label_set_text_fmt(ui_Label5, "Temp. Amb.: %3.2f", temperature.getTemperature());
 }
