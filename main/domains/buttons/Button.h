@@ -15,6 +15,20 @@ enum
 };
 typedef unsigned int press_type;
 
+enum ButtonState
+{
+    RELEASED,
+    PRESSED
+};
+
+enum ButtonPressState
+{
+    NOT_PRESSED,
+    SINGLE_PRESS,
+    DOUBLE_PRESS,
+    LONG_PRESS
+};
+
 class Button
 {
 private:
@@ -26,7 +40,6 @@ private:
     unsigned long buttonPressTime = 0;
     unsigned long buttonReleaseTime = 0;
     unsigned long pressDuration = 0;
-    bool buttonState();
 
 public:
     Button(gpio_num_t pin);
@@ -34,6 +47,7 @@ public:
     gpio_num_t getPin();
     // press_type getPressType();
     press_type getButtonEvent(int pinState);
+    bool getButtonState();
 };
 
 #endif

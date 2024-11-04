@@ -54,7 +54,7 @@ gpio_num_t Button::getPin()
 //     return SINGLE_TAP;
 // }
 
-bool Button::buttonState()
+bool Button::getButtonState()
 {
     return gpio_get_level(this->pin);
 }
