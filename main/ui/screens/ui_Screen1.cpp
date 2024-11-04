@@ -3,9 +3,6 @@
 // LVGL version: 8.3.11
 // Project name: SquareLine_Project
 #include "ui_screen1.h"
-#include "../ui.h"
-#include "./domains/sensors/pressure/Pressure.h"
-#include "./domains/sensors/temperature/Temperature.h"
 
 // #include "cbspI2C.h"
 // #include "cBMP280.h"
@@ -29,6 +26,7 @@ void ui_Screen1_screen_init(void)
     // printf("ui_Screen1_screen_init\n");
     pressure.init();
     temperature.init();
+
     ui_Screen1 = lv_obj_create(NULL);
     lv_obj_clear_flag(ui_Screen1, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
@@ -63,7 +61,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_style_text_font(ui_Label6, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
 }
 
-void updatePressure()
+void updatePressureTextScreen1()
 {
     // BMP280.poll();
     // SMP3011.poll();
@@ -71,7 +69,7 @@ void updatePressure()
     lv_label_set_text_fmt(ui_Label1, "%6.2f", pressure.getPressureInPsi());
 }
 
-void updateAmbientTemperature()
+void updateAmbientTemperatureTextScreen1()
 {
     // BMP280.poll();
     // SMP3011.poll();

@@ -1,9 +1,11 @@
 #ifndef _UI_SCREEN1_H
 #define _UI_SCREEN1_H
 
-#include "domains/sensors/pressure/Pressure.h"
+#include "../ui.h"
+#include "./domains/sensors/pressure/Pressure.h"
+#include "./domains/sensors/temperature/Temperature.h"
 
-void updatePressure();
-void updateAmbientTemperature();
+void updatePressureTextScreen1();
+void updateAmbientTemperatureTextScreen1();
 
 #endif
