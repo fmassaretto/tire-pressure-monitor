@@ -13,7 +13,7 @@ void Pressure::init()
 float Pressure::getPressureInKPa()
 {
     SMP3011.poll();
-    printf("Pressure.cpp: %6.2f", SMP3011.getPressure());
+    // printf("Pressure.cpp: %6.2f", SMP3011.getPressure());
     return SMP3011.getPressure();
 }
 
@@ -25,4 +25,9 @@ float Pressure::getPressureInPsi()
 float Pressure::getPressureInBar()
 {
     return this->getPressureInKPa() / 100;
+}
+
+float Pressure::getTemperature()
+{
+    return SMP3011.getTemperature();
 }

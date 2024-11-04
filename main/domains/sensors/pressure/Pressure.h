@@ -17,6 +17,7 @@ public:
     void init();
     float getPressureInPsi();
     float getPressureInBar();
+    float getTemperature();
 };
 
 #endif
