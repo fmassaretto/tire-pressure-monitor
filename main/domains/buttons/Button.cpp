@@ -5,6 +5,7 @@ Button::Button(gpio_num_t pin)
     this->pin = pin;
 
     gpio_set_direction(pin, GPIO_MODE_INPUT);
+    // gpio_set_pull_mode(pin, GPIO_PULLUP_ONLY);
     gpio_set_intr_type(pin, GPIO_INTR_NEGEDGE);
 }
 
@@ -58,7 +59,7 @@ bool Button::buttonState()
     return gpio_get_level(this->pin);
 }
 
-press_type Button::getButtonEvent()
+press_type Button::getButtonEvent(int pinState)
 {
     static const uint32_t DOUBLE_GAP_MILLIS_MAX = 250;
     static const uint32_t LONG_MILLIS_MIN = 800;
@@ -73,7 +74,7 @@ press_type Button::getButtonEvent()
     // uint32_t now = HAL_GetTick();
 
     // If state changed...
-    if (button_down != buttonState())
+    if (button_down != pinState)
     {
         button_down = !button_down;
         if (button_down)

@@ -33,7 +33,7 @@ public:
     ~Button();
     gpio_num_t getPin();
     // press_type getPressType();
-    press_type getButtonEvent();
+    press_type getButtonEvent(int pinState);
 };
 
 #endif
