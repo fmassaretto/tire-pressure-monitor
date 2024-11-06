@@ -11,12 +11,14 @@ private:
     cSMP3011 SMP3011;
     I2C *i2c;
     float getPressureInKPa();
+    float getPressureInPsi();
+    float getPressureInBar();
 
 public:
     Pressure();
     void init();
-    float getPressureInPsi();
-    float getPressureInBar();
+    float getPressure(bool changeScale);
+    float getRecomendedPressure(bool changeScale);
     float getTemperature();
 };
 

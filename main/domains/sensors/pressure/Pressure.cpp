@@ -27,6 +27,32 @@ float Pressure::getPressureInBar()
     return this->getPressureInKPa() / 100;
 }
 
+float Pressure::getPressure(bool changeScale)
+{
+    if (changeScale)
+    {
+        printf("BAR\n");
+        return this->getPressureInBar();
+    }
+    else
+    {
+        printf("PSI\n");
+        return this->getPressureInPsi();
+    }
+}
+
+float Pressure::getRecomendedPressure(bool changeScale)
+{
+    if (changeScale)
+    {
+        return 1.0;
+    }
+    else
+    {
+        return 2.0;
+    }
+}
+
 float Pressure::getTemperature()
 {
     return SMP3011.getTemperature();
