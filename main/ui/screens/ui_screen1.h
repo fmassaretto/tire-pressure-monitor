@@ -2,10 +2,9 @@
 #define _UI_SCREEN1_H
 
 #include "../ui.h"
-#include "./domains/sensors/pressure/Pressure.h"
-#include "./domains/sensors/temperature/Temperature.h"
+#include "utils/util.h"
 
-void updatePressureTextScreen1();
-void updateAmbientTemperatureTextScreen1();
+void updatePressureTextScreen1(float value);
+void updateAmbientTemperatureTextScreen1(float value);
 
 #endif

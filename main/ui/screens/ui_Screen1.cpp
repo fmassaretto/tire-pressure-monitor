@@ -11,8 +11,6 @@
 // cbspI2C I2CChannel1;
 // cBMP280 BMP280;
 // cSMP3011 SMP3011;
-Pressure pressure;
-Temperature temperature;
 
 void ui_Screen1_screen_init(void)
 {
@@ -24,8 +22,6 @@ void ui_Screen1_screen_init(void)
 
     // pressure->init();
     // printf("ui_Screen1_screen_init\n");
-    pressure.init();
-    temperature.init();
 
     ui_Screen1 = lv_obj_create(NULL);
     lv_obj_clear_flag(ui_Screen1, LV_OBJ_FLAG_SCROLLABLE); /// Flags
@@ -61,18 +57,19 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_style_text_font(ui_Label6, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
 }
 
-void updatePressureTextScreen1()
+void updatePressureTextScreen1(float value)
 {
     // BMP280.poll();
     // SMP3011.poll();
     // lv_label_set_text_fmt(ui_Label1, "%6.2f", SMP3011.getPressure());
-    lv_label_set_text_fmt(ui_Label1, "%6.2f", pressure.getPressureInPsi());
+    Util::updatePressureScale(ui_Label6, Util::getChangePressureScale());
+    lv_label_set_text_fmt(ui_Label1, "%6.2f", value);
 }
 
-void updateAmbientTemperatureTextScreen1()
+void updateAmbientTemperatureTextScreen1(float value)
 {
     // BMP280.poll();
     // SMP3011.poll();
     // lv_label_set_text_fmt(ui_Label1, "%6.2f", SMP3011.getPressure());
-    lv_label_set_text_fmt(ui_Label5, "Temp. Amb.: %3.2f", temperature.getTemperature());
+    lv_label_set_text_fmt(ui_Label5, "Temp. Amb.: %3.2f", value);
 }

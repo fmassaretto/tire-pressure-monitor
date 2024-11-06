@@ -2,9 +2,9 @@
 #define _UI_SCREEN2_H
 
 #include "../ui.h"
-#include "./domains/sensors/pressure/Pressure.h"
+#include "utils/util.h"
 
-void updatePressureTextScreen2();
-void updateTireTemperatureTextScreen2();
+void updatePressureTextScreen2(float value);
+void updateTireTemperatureTextScreen2(float value);
 
 #endif

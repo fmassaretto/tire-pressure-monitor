@@ -2,15 +2,10 @@
 // SquareLine Studio version: SquareLine Studio 1.4.2
 // LVGL version: 8.3.11
 // Project name: SquareLine_Project
-#include "ui_screen1.h"
-
-Pressure pressure2;
+#include "ui_screen2.h"
 
 void ui_Screen2_screen_init(void)
 {
-
-    pressure2.init();
-
     ui_Screen2 = lv_obj_create(NULL);
     lv_obj_clear_flag(ui_Screen2, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
@@ -53,12 +48,13 @@ void ui_Screen2_screen_init(void)
     lv_obj_set_style_text_font(ui_Label9, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
 }
 
-void updatePressureTextScreen2()
+void updatePressureTextScreen2(float value)
 {
-    lv_label_set_text_fmt(ui_Label7, "%6.2f", pressure2.getPressureInPsi());
+    Util::updatePressureScale(ui_Label8, Util::getChangePressureScale());
+    lv_label_set_text_fmt(ui_Label7, "%6.2f", value);
 }
 
-void updateTireTemperatureTextScreen2()
+void updateTireTemperatureTextScreen2(float value)
 {
-    lv_label_set_text_fmt(ui_Label9, "Temp. Pneu: %3.2f C", pressure2.getTemperature());
+    lv_label_set_text_fmt(ui_Label9, "Temp. Pneu: %3.2f C", value);
 }
