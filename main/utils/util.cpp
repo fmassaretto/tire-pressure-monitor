@@ -13,7 +13,6 @@ Util::~Util()
 
 void Util::changePressureScale(bool changeScale)
 {
-    printf("%d \n", changeScale);
     isChangePressureScale = changeScale;
 }
 
