@@ -4,25 +4,8 @@
 // Project name: SquareLine_Project
 #include "ui_screen1.h"
 
-// #include "cbspI2C.h"
-// #include "cBMP280.h"
-// #include "cSMP3011.h"
-
-// cbspI2C I2CChannel1;
-// cBMP280 BMP280;
-// cSMP3011 SMP3011;
-
 void ui_Screen1_screen_init(void)
 {
-    // I2CChannel1.init(I2C_NUM_1, GPIO_NUM_33, GPIO_NUM_32);
-    // I2CChannel1.openAsMaster(100000);
-
-    // BMP280.init(I2CChannel1);
-    // SMP3011.init(I2CChannel1);
-
-    // pressure->init();
-    // printf("ui_Screen1_screen_init\n");
-
     ui_Screen1 = lv_obj_create(NULL);
     lv_obj_clear_flag(ui_Screen1, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
@@ -33,9 +16,6 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_y(ui_Label1, -18);
     lv_obj_set_align(ui_Label1, LV_ALIGN_CENTER);
     lv_label_set_long_mode(ui_Label1, LV_LABEL_LONG_SCROLL_CIRCULAR);
-    // lv_label_set_text_fmt(ui_Label1, "%6.2f", pressure->getPressureInPsi());
-    // printf("%6.2f", pressure->getPressureInPsi());
-    // lv_label_set_text(ui_Label1, pressure->getPressureInPsi());
 
     ui_Label5 = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_Label5, SCREEN_WIDTH);     /// 1
@@ -59,17 +39,11 @@ void ui_Screen1_screen_init(void)
 
 void updatePressureTextScreen1(float value)
 {
-    // BMP280.poll();
-    // SMP3011.poll();
-    // lv_label_set_text_fmt(ui_Label1, "%6.2f", SMP3011.getPressure());
     Util::updatePressureScale(ui_Label6, Util::getChangePressureScale());
     lv_label_set_text_fmt(ui_Label1, "%6.2f", value);
 }
 
 void updateAmbientTemperatureTextScreen1(float value)
 {
-    // BMP280.poll();
-    // SMP3011.poll();
-    // lv_label_set_text_fmt(ui_Label1, "%6.2f", SMP3011.getPressure());
     lv_label_set_text_fmt(ui_Label5, "Temp. Amb.: %3.2f", value);
 }

@@ -4,7 +4,6 @@
 
 #include <mutex>
 #include "cbspI2C.h"
-#include "stdio.h"
 
 class I2C
 {

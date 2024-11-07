@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 
-#include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_lcd_panel_io.h"
@@ -47,8 +46,6 @@ static const char *TAG = "example";
 // Bit number used to represent command and parameter
 #define EXAMPLE_LCD_CMD_BITS 8
 #define EXAMPLE_LCD_PARAM_BITS 8
-
-// extern void example_lvgl_demo_ui(lv_disp_t *disp);
 
 void tire_pressure_monitor_config_init(void)
 {
@@ -129,14 +126,4 @@ void tire_pressure_monitor_config_init(void)
 
     /* Rotation of the screen */
     lv_disp_set_rotation(disp, LV_DISP_ROT_NONE);
-#if 0
-    ESP_LOGI(TAG, "Display LVGL Scroll Text");
-    // Lock the mutex due to the LVGL APIs are not thread-safe
-    if (lvgl_port_lock(0))
-    {
-        example_lvgl_demo_ui(disp);
-        // Release the mutex
-        lvgl_port_unlock();
-    }
-#endif
 }
