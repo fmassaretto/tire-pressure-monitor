@@ -10,6 +10,7 @@ class Pressure
 private:
     cSMP3011 SMP3011;
     I2C *i2c;
+    float adjustedPressureInKPa();
     float getPressureInKPa();
     float getPressureInPsi();
     float getPressureInBar();

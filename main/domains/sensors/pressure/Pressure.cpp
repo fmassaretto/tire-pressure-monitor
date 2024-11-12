@@ -13,18 +13,25 @@ void Pressure::init()
 float Pressure::getPressureInKPa()
 {
     SMP3011.poll();
+    printf("%f\n", SMP3011.getPressure());
 
     return SMP3011.getPressure();
 }
 
+float Pressure::adjustedPressureInKPa()
+{
+    float offset = 557.0;
+    return this->getPressureInKPa() <= 5430.0 ? 0.0 : getPressureInKPa() - offset;
+}
+
 float Pressure::getPressureInPsi()
 {
-    return this->getPressureInKPa() * 0.14503773773020923;
+    return this->adjustedPressureInKPa() * 0.14503773773020923;
 }
 
 float Pressure::getPressureInBar()
 {
-    return this->getPressureInKPa() / 100;
+    return this->adjustedPressureInKPa() / 100;
 }
 
 float Pressure::getPressure(bool changeScale)
