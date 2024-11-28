@@ -107,11 +107,11 @@ Esse projeto está sob licença. Veja o arquivo [LICENÇA](LICENSE.md) para mais
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/badge/Contributors-1-blue?style=for-the-badge
 [contributors-url]: https://github.com/fmassaretto/tire-pressure-monitor/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/badge/FORKS-0-blue?style=for-the-badge
 [forks-url]: https://github.com/fmassaretto/tire-pressure-monitor/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/badge/stars-0-blue?style=for-the-badge
 [stars-url]: https://github.com/fmassaretto/tire-pressure-monitor/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/badge/issues-0-green?style=for-the-badge
 [issues-url]: https://github.com/fmassaretto/tire-pressure-monitor/issues
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
 [license-url]: https://github.com/fmassaretto/tire-pressure-monitor/blob/main/LICENSE.txt
