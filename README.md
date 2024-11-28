@@ -31,13 +31,7 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 
 Para instalar o Aferidor de Pressão de Pneu, siga estas etapas:
 
-Linux e macOS:
-
-```
-<comando_de_instalação>
-```
-
-Windows:
+Windows, Linux e macOS:
 
 1. Clone o repositório
    ```sh
