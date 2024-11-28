@@ -20,8 +20,9 @@ float Pressure::getPressureInKPa()
 
 float Pressure::adjustedPressureInKPa()
 {
-    float offset = 557.0;
-    return this->getPressureInKPa() <= 5430.0 ? 0.0 : getPressureInKPa() - offset;
+    float offset = 5430.0;
+
+    return this->getPressureInKPa() <= 5430.0 ? 0.0 : this->getPressureInKPa() - offset;
 }
 
 float Pressure::getPressureInPsi()
