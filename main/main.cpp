@@ -32,6 +32,7 @@ int pressCount = 0;
 bool isLedOn = false;
 
 // Tasks
+void ButtonTask(void *parameter);
 void TaskScreen(void *parameter);
 void TaskUpdatePressure(void *parameter);
 void TaskUpdateTemperature(void *parameter);
@@ -42,7 +43,7 @@ TaskHandle_t taskScreenHandle = nullptr;
 TaskHandle_t taskUpdatePressureHandle = nullptr;
 TaskHandle_t taskUpdateTemperatureHandle = nullptr;
 
-void buttonTask(void *pvParameters)
+void ButtonTask(void *pvParameters)
 {
     while (true)
     {
@@ -127,8 +128,8 @@ extern "C" void app_main()
     lvgl_port_unlock();
 
     // Create tasks
-    xTaskCreatePinnedToCore(buttonTask, "ButtonTask", 2048, NULL, 5, &taskButtonHandle, 0);
-    xTaskCreate(TaskScreen, "Screen", 2048, nullptr, 3, &taskScreenHandle);
+    xTaskCreate(ButtonTask, "ButtonTask", 2048, nullptr, 5, &taskButtonHandle);
+    xTaskCreate(TaskScreen, "Screen", 4096, nullptr, 3, &taskScreenHandle);
     xTaskCreate(TaskUpdatePressure, "UpdatePressure", 2048, nullptr, 2, &taskUpdatePressureHandle);
     xTaskCreate(TaskUpdateTemperature, "UpdateTemperature", 2048, nullptr, 2, &taskUpdateTemperatureHandle);
 }
@@ -157,7 +158,7 @@ void TaskUpdatePressure(void *parameter)
         if (changeScreen)
         {
             float recomendedPressureValue = pressure.getRecomendedPressure(changeScale);
-            updatePressureTextScreen2(recomendedPressureValue); // TODO: show recomended pressure
+            updatePressureTextScreen2(recomendedPressureValue);
         }
         else
         {
